@@ -22,19 +22,39 @@ jobs:
       run: dotnet publish hello-world.csproj /p:Configuration=Release /p:TargetFramework=netcoreapp3.1 /p:SelfContained=true /p:PublishSingleFile=true /p:PublishTrimmed=true /p:RuntimeIdentifier=win-x64 -o ./publish
       working-directory: ./hello-world
     
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: HelloExe
-        path: ./hello-world/publish/hello-world.exe
-    
-    - name: Get last artifact
+    - name: Download artifacts
+      id: download
       uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          $url = "https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
-          $response = Invoke-RestMethod -Uri $url -Headers @{ "Authorization" = "Bearer $env:GITHUB_TOKEN" }
-          $lastArtifactUrl = $response.artifacts[0].archive_download_url
-          echo "::set-output name=last-artifact-url::$lastArtifactUrl"
-      id: last-artifact
+          const artifacts = await github.actions.listArtifactsForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          const latestArtifact = artifacts.data[0];
+          console.log(`Latest artifact: ${latestArtifact.id}`);
+          console.log(`Artifact URL: ${latestArtifact.archive_download_url}`);
+          return {
+            id: latestArtifact.id,
+            url: latestArtifact.archive_download_url
+          }
+
+    - name: Update README
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const readme = await github.repos.getReadme({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          const newContent = `Download the latest artifact [here](${{ steps.download.outputs.url }})`;
+          await github.repos.createOrUpdateFileContents({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            path: readme.data.path,
+            message: 'Update README',
+            content: Buffer.from(newContent).toString('base64'),
+            sha: readme.data.sha
+          });
