@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>hello_world</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
+    <Configurations>Debug;Release;Publicacao</Configurations>
   </PropertyGroup>
 
 </Project>
