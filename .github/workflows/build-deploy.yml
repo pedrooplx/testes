@@ -23,7 +23,6 @@ jobs:
       working-directory: ./hello-world
     
     - name: Download artifacts
-      id: download
       uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
