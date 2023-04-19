@@ -30,12 +30,3 @@ jobs:
       with:
         name: HelloExe
         path: ./hello-world/publish/hello-world.exe
-
-    - name: Update Badge
-      uses: actions-ecosystem/actions-badge@v1
-      with:
-        path: README.md
-        badge-url: https://github.com/<your-github-username>/<your-repo-name>/releases/latest/download/hello-world.exe
-        badge-text: "Download latest exe"
-        badge-color: "green"
-        badge-id: "exe-badge"
