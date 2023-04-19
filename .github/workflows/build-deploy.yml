@@ -17,9 +17,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.x'
+    
+    - name: Restore NuGet packages
+        run: dotnet restore
 
     - name: Build and Publish
-      # run: dotnet publish -c Release -r win-x64 --self-contained true --publish-single-file true -o ./publish
       run: dotnet publish hello-world.csproj /p:Configuration=Release /p:TargetFramework=netcoreapp3.1 /p:SelfContained=true /p:PublishSingleFile=true /p:PublishTrimmed=true /p:RuntimeIdentifier=win-x64 -o ./publish
       working-directory: ./hello-world
     
@@ -29,15 +31,22 @@ jobs:
         name: HelloExe
         path: ./hello-world/publish/hello-world.exe
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+     - name: Add Badge to README
+      uses: shieldsio/shields@v5.11.0
       with:
-        name: HelloAll
-        path: ./hello-world/publish/
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        style: flat-square
+        label: Download
+        message: Latest Release
+        color: success
+        logo: github
+        link: ${{ steps.upload.outputs.artifact_url }}
+      if: always()
     
-    - name: Generate Badge
-      id: generate-badge
-      run: echo "::set-output name=badge::![Download Latest](https://img.shields.io/badge/Download-Latest-brightgreen.svg?logo=github&style=flat-square&logoColor=white&link=$(ls -td ./publish/* | head -n 1))"
-
-    - name: Update README
-      run: sed -i "s|!\[Download Latest\].*|${{ steps.generate-badge.outputs.badge }}|" README.md
+    - name: Update Badge on PRs
+      uses: EndBug/add-and-commit@v8
+      with:
+        message: 'docs(readme): update download badge [skip ci]'
+        directory: ./
+        branch: main
+      if: github.ref == 'refs/heads/main'
