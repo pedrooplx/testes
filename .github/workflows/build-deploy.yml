@@ -19,7 +19,8 @@ jobs:
         dotnet-version: '3.1.x'
 
     - name: Build and Publish
-      run: dotnet publish -c Release -r win-x64 --self-contained true --publish-single-file true -o ./publish
+      # run: dotnet publish -c Release -r win-x64 --self-contained true --publish-single-file true -o ./publish
+      run: dotnet build hello-world.csproj /p:Configuration=Release /p:TargetFramework=netcoreapp3.1 /p:SelfContained=true /p:PublishSingleFile=true /p:PublishTrimmed=true /p:RuntimeIdentifier=win-x64 -o ./publish
       working-directory: ./hello-world
     
     - name: Upload Artifact
@@ -33,3 +34,10 @@ jobs:
       with:
         name: HelloAll
         path: ./hello-world/publish/
+    
+    - name: Generate Badge
+      id: generate-badge
+      run: echo "::set-output name=badge::![Download Latest](https://img.shields.io/badge/Download-Latest-brightgreen.svg?logo=github&style=flat-square&logoColor=white&link=$(ls -td ./publish/* | head -n 1))"
+
+    - name: Update README
+      run: sed -i "s|!\[Download Latest\].*|${{ steps.generate-badge.outputs.badge }}|" README.md
