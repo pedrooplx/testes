@@ -31,22 +31,13 @@ jobs:
         name: HelloExe
         path: ./hello-world/publish/hello-world.exe
 
-    - name: Add Badge to README
-      uses: shieldsio/shields@v5.11.0
+    - name: Add badge to README
+      uses: badgen/badgen-action@v1
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        style: flat-square
-        label: Download
-        message: Latest Release
-        color: success
-        logo: github
+        subject: exe
+        status: download
+        color: blue
+        label: "Download latest exe"
+        icon: github
         link: ${{ steps.upload.outputs.artifact_url }}
-      if: always()
-    
-    - name: Update Badge on PRs
-      uses: EndBug/add-and-commit@v8
-      with:
-        message: 'docs(readme): update download badge [skip ci]'
-        directory: ./
-        branch: main
-      if: github.ref == 'refs/heads/main'
+        file: README.md
