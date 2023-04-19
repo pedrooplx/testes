@@ -1,0 +1,1 @@
+Baixe o último artefato gerado: [my-artifact.zip](${{ steps.last-artifact.outputs.last-artifact-url }})
