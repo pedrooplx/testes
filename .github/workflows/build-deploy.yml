@@ -31,13 +31,11 @@ jobs:
         name: HelloExe
         path: ./hello-world/publish/hello-world.exe
 
-    - name: Add badge to README
-      uses: badgen/badgen-action@v1
+    - name: Update Badge
+      uses: actions-ecosystem/actions-badge@v1
       with:
-        subject: exe
-        status: download
-        color: blue
-        label: "Download latest exe"
-        icon: github
-        link: ${{ steps.upload.outputs.artifact_url }}
-        file: README.md
+        path: README.md
+        badge-url: https://github.com/<your-github-username>/<your-repo-name>/releases/latest/download/hello-world.exe
+        badge-text: "Download latest exe"
+        badge-color: "green"
+        badge-id: "exe-badge"
