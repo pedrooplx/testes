@@ -29,12 +29,12 @@ jobs:
         path: ./hello-world/publish/hello-world.exe
     
     - name: Get last artifact
-    uses: actions/github-script@v4
-    with:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      script: |
-        $url = "https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
-        $response = Invoke-RestMethod -Uri $url -Headers @{ "Authorization" = "Bearer $env:GITHUB_TOKEN" }
-        $lastArtifactUrl = $response.artifacts[0].archive_download_url
-        echo "::set-output name=last-artifact-url::$lastArtifactUrl"
-    id: last-artifact
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          $url = "https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
+          $response = Invoke-RestMethod -Uri $url -Headers @{ "Authorization" = "Bearer $env:GITHUB_TOKEN" }
+          $lastArtifactUrl = $response.artifacts[0].archive_download_url
+          echo "::set-output name=last-artifact-url::$lastArtifactUrl"
+      id: last-artifact
