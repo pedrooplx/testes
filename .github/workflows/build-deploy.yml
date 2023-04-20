@@ -44,6 +44,6 @@ jobs:
 
     - name: Update README
       run: |
+        download_url="${{ steps.generate_download_link.outputs.download_url }}"
         sed -i "s|<DOWNLOAD_URL>|${{ steps.generate_download_link.outputs.download_url }}|g" README.md
-        echo "${{ steps.generate_download_link.outputs.download_url }}"
       shell: bash
