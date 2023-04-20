@@ -36,13 +36,15 @@ jobs:
         artifact_id=${{ steps.get_artifact_id.outputs.artifact_id }}
       shell: bash
 
-    - name: Generate Artifact Download Link
-      id: artifact_link
-      uses: technote-space/get-artifact-url-action@v1.0
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
       with:
-        artifact-name: HelloExe
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        run-id: ${{ github.run_id }}
+        name: HelloExe
+        path: artifacts
 
+    - name: Set Artifact Path
+      id: set_artifact_path
+      run: echo "::set-output name=artifact_path::$(find $GITHUB_WORKSPACE/artifacts -name '*.exe' -print0 | xargs -0 ls -1 -t | head -n1)"
+      
     - name: Print Artifact Download Link
-      run: echo ${{ steps.artifact_link.outputs.artifact_url }}
+      run: echo "${{ github.server_url }}/${{ github.repository }}/raw/${{ steps.set_artifact_path.outputs.artifact_path }}"
