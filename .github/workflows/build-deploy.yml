@@ -30,13 +30,11 @@ jobs:
 
     - name: Get Artifact ID
       id: get_artifact_id
-      uses: andstor/github-actions-get-artifact-id@v1
-      with:
-        artifact-name: HelloExe
+      run: echo "::set-output name=artifact_id::$(curl -s https://api.github.com/repos/${{ github.repository }}/actions/artifacts | jq -r '.artifacts[0].id')"
+      shell: bash
 
     - name: Generate Download Link
-      run: |
-        echo "::set-output name=download_url::$(curl -s https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ steps.get_artifact_id.outputs.artifact_id }}/zip --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' | jq -r '.archive_download_url')"
+      run: echo "::set-output name=download_url::$(curl -s https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ steps.get_artifact_id.outputs.artifact_id }}/zip --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' | jq -r '.archive_download_url')"
       id: generate_download_link
 
     - name: Update README
