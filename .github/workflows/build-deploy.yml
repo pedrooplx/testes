@@ -22,38 +22,23 @@ jobs:
       run: dotnet publish hello-world.csproj /p:Configuration=Release /p:TargetFramework=netcoreapp3.1 /p:SelfContained=true /p:PublishSingleFile=true /p:PublishTrimmed=true /p:RuntimeIdentifier=win-x64 -o ./publish
       working-directory: ./hello-world
     
-    - name: Download artifacts
-      uses: actions/github-script@v4
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const artifacts = await github.actions.listArtifactsForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
-          const latestArtifact = artifacts.data[0];
-          console.log(`Latest artifact: ${latestArtifact.id}`);
-          console.log(`Artifact URL: ${latestArtifact.archive_download_url}`);
-          return {
-            id: latestArtifact.id,
-            url: latestArtifact.archive_download_url
-          }
+        name: HelloExe
+        path: ./hello-world/publish/hello-world.exe
+
+    - name: Get Artifact ID
+      id: get_artifact_id
+      uses: andstor/github-actions-get-artifact-id@v1
+      with:
+        artifact-name: HelloExe
+
+    - name: Generate Download Link
+      run: echo "::set-output name=download_url::$(curl -s https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ steps.get_artifact_id.outputs.artifact_id }}/zip --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' | jq -r '.archive_download_url')"
+      id: generate_download_link
 
     - name: Update README
-      uses: actions/github-script@v4
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const readme = await github.repos.getReadme({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
-          const newContent = `Download the latest artifact [here](${{ steps.download.outputs.url }})`;
-          await github.repos.createOrUpdateFileContents({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            path: readme.data.path,
-            message: 'Update README',
-            content: Buffer.from(newContent).toString('base64'),
-            sha: readme.data.sha
-          });
+      run: |
+        sed -i 's|<DOWNLOAD_URL>|${{ steps.generate_download_link.outputs.download_url }}|g' README.md
+      shell: bash
