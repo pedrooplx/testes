@@ -34,15 +34,20 @@ jobs:
         response=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts")
         echo "::set-output name=artifact_id::$(echo $response | jq -r '.artifacts[0].id')"
       shell: bash
-
-    - name: Get Artifact Download URL
-      id: get_download_url
+    
+    - name: Artifact ID
       run: |
-        response=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ steps.get_artifact_id.outputs.artifact_id }}/zip")
-        url=$(echo $response | jq -r '.url')
-        echo "::set-output name=download_url::${url%\{*}"
+        artifact_id=${{ steps.get_artifact_id.outputs.artifact_id }}
+
+    - name: Generate Download Link
+      run: |
+        artifact_id=${{ steps.get_artifact_id.outputs.artifact_id }}
+        response=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$artifact_id/zip")
+        echo "::set-output name=download_url::$(echo $response | jq -r '.archive_download_url')"
       shell: bash
 
-    - name: Use Download URL
+    - name: Update README
       run: |
-        echo "The download URL is: ${{ steps.get_download_url.outputs.download_url }}"
+        download_url="${{ steps.generate_download_link.outputs.download_url }}"
+        sed -i "s|<DOWNLOAD_URL>|${{ steps.generate_download_link.outputs.download_url }}|g" README.md
+      shell: bash
