@@ -28,31 +28,8 @@ jobs:
         name: HelloExe
         path: ./hello-world/publish/hello-world.exe
 
-    - name: Get Artifact ID
-      id: get_artifact_id
-      run: echo "::set-output name=artifact_id::$(echo ${{ github.event.workflow_run.artifacts[0].id }})"
-    
-    - name: Download Artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: HelloExe
-        path: ./hello-world.exe
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
-      with:
-        title: Update download link in README
-        commit-message: Update download link in README
-        branch: update-download-link
-        delete-branch: true
-        base: main
-        body: |
-          Updated download link for the latest version of hello-world.exe.
-        labels: automerge
-        token: ${{ secrets.GITHUB_TOKEN }}
-        paths: README.md
-        changes: |
-          Latest version: [hello-world.exe](https://github.com/${{ github.repository }}/raw/update-download-link/hello-world.exe)
-      env:
-        ARTIFACT_ID: ${{ steps.get_artifact_id.outputs.artifact_id }}
-        REPO_NAME: ${{ github.repository }}
+    - name: Add download link to README.md
+      run: |
+        echo "[Download hello-world.exe](https://github.com/<seu-usuario>/<seu-repositorio>/raw/main/hello-world/publish/hello-world.exe)" >> README.md
+        sed -i 's/\r$//' README.md
+      shell: bash
