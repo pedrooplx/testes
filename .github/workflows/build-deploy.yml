@@ -30,23 +30,29 @@ jobs:
 
     - name: Get Artifact ID
       id: get_artifact_id
-      uses: andstor/github-actions-get-artifact-id@v1
+      run: echo "::set-output name=artifact_id::$(echo ${{ github.event.workflow_run.artifacts[0].id }})"
+    
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
       with:
-        artifact-name: HelloExe
+        name: HelloExe
+        path: ./hello-world.exe
 
-    - name: Generate Download Link
-      id: generate_download_link
-      run: echo "::set-output name=download_url::$(cat download_url.txt)"
-      shell: bash
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        title: Update download link in README
+        commit-message: Update download link in README
+        branch: update-download-link
+        delete-branch: true
+        base: main
+        body: |
+          Updated download link for the latest version of hello-world.exe.
+        labels: automerge
+        token: ${{ secrets.GITHUB_TOKEN }}
+        paths: README.md
+        changes: |
+          Latest version: [hello-world.exe](https://github.com/${{ github.repository }}/raw/update-download-link/hello-world.exe)
       env:
-        artifact_id: ${{ steps.get_artifact_id.outputs.artifact_id }}
-      working-directory: ./
-      timeout-minutes: 1
-      if: always()
-
-    - name: Update README
-      uses: andstor/github-actions-update-readme@v1
-      with:
-        path: README.md
-        marker: '<DOWNLOAD_URL>'
-        new-data: ${{ steps.generate_download_link.outputs.download_url }}
+        ARTIFACT_ID: ${{ steps.get_artifact_id.outputs.artifact_id }}
+        REPO_NAME: ${{ github.repository }}
