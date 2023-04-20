@@ -42,9 +42,13 @@ jobs:
         name: HelloExe
         path: artifacts
 
-    - name: Set Artifact Path
-      id: set_artifact_path
-      run: echo "::set-output name=artifact_path::$(find $GITHUB_WORKSPACE/artifacts -name '*.exe' -print0 | xargs -0 ls -1 -t | head -n1)"
-      
-    - name: Print Artifact Download Link
-      run: echo "${{ github.server_url }}/${{ github.repository }}/raw/${{ steps.set_artifact_path.outputs.artifact_path }}"
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: HelloExe
+        path: ./hello-world/publish
+
+    - name: Get Artifact URL
+      id: get_artifact_url
+      run: |
+        echo "::set-output name=artifact_url::$(echo "${{ github.server_url }}/${{ github.repository }}/raw/${{ github.ref }}/hello-world/publish/hello-world.exe")"
