@@ -28,20 +28,6 @@ jobs:
         name: HelloExe
         path: ./hello-world/publish/hello-world.exe
 
-    - name: Get Artifact ID
-      id: get_artifact_id
-      run: |
-        response=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts")
-        echo "::set-output name=artifact_id::$(echo $response | jq -r '.artifacts[0].id')"
-        artifact_id=${{ steps.get_artifact_id.outputs.artifact_id }}
-      shell: bash
-
-    - name: Download Artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: HelloExe
-        path: artifacts
-
     - name: Download Artifact
       uses: actions/download-artifact@v2
       with:
