@@ -1,0 +1,1 @@
+2023-10-20 19:48:26.198 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}

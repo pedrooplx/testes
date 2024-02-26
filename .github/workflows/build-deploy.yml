@@ -37,4 +37,4 @@ jobs:
     - name: Get Artifact URL
       id: get_artifact_url
       run: |
-        echo "::set-output name=artifact_url::$(echo "${{ github.server_url }}/${{ github.repository }}/raw/${{ github.ref }}/hello-world/publish/hello-world.exe")"
+        echo "::set-output name=artifact_url::$(echo "${{ github.server_url }}/${{ github.repository }}/raw/${{ github.ref }}/hello-world/publish/HelloExe")"

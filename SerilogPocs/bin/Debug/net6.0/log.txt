@@ -1,0 +1,14 @@
+2023-10-20 19:48:26.198 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}
+2023-10-20 19:52:27.638 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}
+2023-10-20 19:52:52.850 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}
+2023-10-20 19:53:20.755 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}
+2023-10-20 19:53:56.321 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}
+2023-10-20 19:54:01.363 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}
+2023-10-20 19:55:28.920 -03:00 [INF] Objeto: { Property1 = Value1, Property2 = Value2 }
+2023-10-20 19:56:25.031 -03:00 [INF] Objeto: { Property1 = Value1, Property2 = Value2 }
+2023-10-20 19:56:35.905 -03:00 [INF] Objeto: { Property1 = Value1, Property2 = Value2 }
+2023-10-20 19:56:40.725 -03:00 [INF] Objeto: { Property1 = Value1, Property2 = Value2 }
+2023-10-20 19:56:55.414 -03:00 [INF] Objeto: { Property1 = Value1, Property2 = Value2 }
+2023-10-20 19:57:07.213 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}
+2023-10-20 19:58:36.797 -03:00 [INF] Objeto: {"Property1":"Value1","Property2":"Value2"}
+......
